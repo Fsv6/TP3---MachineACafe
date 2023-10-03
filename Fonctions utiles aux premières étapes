@@ -1,0 +1,112 @@
+/* ETAPE 1 -------------------------------------------------------
+function start() {
+    const etapes = [
+    {
+        title : "Commence à faire le café",
+        duree : 0
+    },
+    {
+        title: "Mouds les grains de café",
+        duree : 1000
+    },
+    {
+        title: "Infuse les grains de café moulus",
+        duree : 6000
+    },
+    {
+        title: "Verse le café dans une tasse",
+        duree : 4000
+    },
+    {
+        title: "Ajoute un peu de lait dans la tasse",
+        duree : 5000
+    },
+    {
+        title: "Le café est terminé.",
+        duree : 3000
+    }]
+    const laListe = renewTag('ul');
+    wrapper.append(laListe)
+    injectElements(etapes, laListe)
+}
+*/
+
+/* FONCTION InjectElements POUR L'ETAPE 1 DU TP
+export async function injectElements(lesEtapes, laListe) {
+    for (let value of Object.values(lesEtapes)) {
+        await delay(value.duree)
+
+        for (let etape in value){
+            let liListe = createElement('li')
+            liListe.innerText = etape
+            laListe.append(liListe)
+        }
+
+    }
+}*/
+
+ETAPE 2 -------------------------------------------------------------------------
+function calculTasse() {
+    //document.querySelector('#start').removeEventListener('click', calculTasse)
+
+    let nbTasse = document.querySelector('input').value
+    if (isNaN(nbTasse)){
+        document.querySelector('#start').textContent = "Réessaie";
+        calculTasse();
+        return;
+    } else {
+        const laListe = renewTag('ul');
+        wrapper.append(laListe)
+        for (const value of Object.values(cafe)) {
+            value.eau *= Number(nbTasse)
+            value.lait *= Number(nbTasse)
+            value.grains *= Number(nbTasse)
+        }
+        //console.log(cafe)
+        injectElements(cafe,laListe)
+    }
+}
+
+ETAPE 3-----------------------------------------------------------------------
+
+function demanderQuantite(question) {
+    return new Promise((resolve) => {
+        inputInfo.value = question;
+
+        document.querySelector('#start').addEventListener("click", function () {
+            const quantite = document.querySelector('input').value;
+            resolve(quantite);
+        });
+    });
+}
+
+async function prep() {
+    const quantiteEau = await demanderQuantite("Qté eau dispo ? ");
+    const quantiteLait = await demanderQuantite("Qté Lait dispo ?");
+    const quantiteCafe = await demanderQuantite("Qté grains de café dispo ?");
+    const nombreTasses = await demanderQuantite("Nb Tasses voulu ?");
+
+    if (peutPrepCafe(quantiteEau, quantiteLait, quantiteCafe, nombreTasses)) {
+        //console.log("Préparation de ${nombreTasses} tasse(s) de café...");
+    } else {
+        //console.log("Impossible de préparer le café en raison du manque de fournitures.");
+    }
+}
+
+function peutPrepCafe (eau, lait, grains, tasses){
+    const eauParTasse = 200;
+    const laitParTasse = 50;
+    const cafeParTasse = 15;
+    const N_eau = eau / eauParTasse;
+    const N_lait = lait / laitParTasse
+    const N_grains = grains / cafeParTasse
+    const N = Math.trunc(Math.min(N_eau,N_grains,N_lait))
+    if (N < tasses){
+        alert(" Non, je ne peux faire que " + N +" tasses de café")
+    } else if (N == tasses){
+        alert("Oui, je peux faire cette quantité de café ")
+    } else {
+        alert("Oui, je peux faire cette quantité de café (et même " + (N-tasses) + " de plus que cela")
+    }
+
+}
